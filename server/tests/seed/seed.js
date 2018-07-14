@@ -40,7 +40,7 @@ const products = [
         name: 'First product',
         price: 3,
         quantity: 2 ,
-        description: "first product to sell",
+        description: "second product to sell",
       _creator: userTwoeID
     }
 ];

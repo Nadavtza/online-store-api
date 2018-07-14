@@ -22,16 +22,6 @@ const port = process.env.PORT ||3000 ;
 app.use(bodyParser.json());
 
 //products
-//Get  user products
-app.get('/products' ,authenticate , (req , res) => {
-    Product.find().then((products)=>{
-        res.send({message: 'List of all products:',
-        products});
-    } , (e) =>{
-        res.status(400).send(e);
-    });
-});
-
 //post route
 app.post('/products',authenticate , (req, res)=>{ 
                                 
