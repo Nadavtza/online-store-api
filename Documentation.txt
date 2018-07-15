@@ -1,0 +1,141 @@
+
+Target:
+	Implementation of a RESTful API for an online store.
+
+	Support of addition, deletion, editing and searching a product.
+
+	Support authentication - only authenticated users can add / view / edit / delete products.
+
+
+
+This Restful API is build using NodeJS and uses MongoDB for database interaction.
+
+The Solution main files: 
+ 
+server:
+
+  -server.js:   Holds Functionality required for the server - all the requests and responses.
+			  
+	All products and users requests such as POST/GET/DELETE/PATCH can found here.  
+		
+
+models:
+
+  -products.js: Class represnting a product.
+		
+	members - simple data such as product name.	
+
+
+  -user.js :   Class represnting a user
+
+	members -name , email , password, tokens .
+		The user members need to be valid ,email must be email address and so on.
+		Tokens are used for authentication.
+ 
+	methods - generateAuthToken , findByToken , findByCredentials. 
+	
+	Only authenticated user can create, update, delete, view the products details.
+
+
+configuration:
+	
+- config.js: uses for configuration purpose - development/test/Heroku mode.
+
+
+Data Flow:
+
+1. User signup for the API.
+
+2. User needs to login.
+
+2. On each methods GET, POST, PATCH,DELETE, user needs to send authentication Key ("x-auth") generated using his signup username and password.
+
+3. For inserting product details user needs to send POST request - authentication key in header
+    and JSON formatted data in Body.
+
+4. User can further Edit/Delete/GET  the product details which are only created by him.
+
+5. User logut - can't do GET, POST, PATCH,DELETE.
+
+
+Instructions:
+
+url == https://enthousiaste-fromage-55651.herokuapp.com OR localhost:3000
+
+x-auth == user key after signup/login , need to send in header with each request, examples provide down below.
+
+
+USER SIGNUP:
+	POST url/users
+	body = JSON format,
+		{
+	"name" : "nadav",
+	"password" : "123456",
+	"email" : "nadav123@gmail.com"
+}
+	
+USER LOGIN:
+	POST url/users/login
+	body = 
+		{
+	"password" : "123456",
+	"email" : "nadav123@gmail.com"
+}
+	you will get x-auth = something, in this case  = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YjRiMTZmMzViMThhMjAwMTQ2NDlkOGIiLCJhY2Nlc3MiOiJhdXRoIiwiaWF0IjoxNTMxNjQ3OTk1fQ.zd7mEUtO2y_pnfRDoc_59yGEI_KEmFN928POOTcbH7M
+	we will send the x-auth in the header for the following requests.
+
+USER LOGOUT:
+	DELETE url/users/me/token
+	 x-auth =  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YjRiMTZmMzViMThhMjAwMTQ2NDlkOGIiLCJhY2Nlc3MiOiJhdXRoIiwiaWF0IjoxNTMxNjQ3OTk1fQ.zd7mEUtO2y_pnfRDoc_59yGEI_KEmFN928POOTcbH7M
+
+ADD PRODUCT:
+	POST url/products
+	body  = {
+	"name" : "iphone",
+	"price" : 3000,
+	"description" : "new iphone",
+	"quantity" : 1
+}
+	send x-auth in header
+	
+	return - {
+    "product": {
+        "_id": "5b4b1a5c5b18a20014649d90",
+        "name": "iphone",
+        "description": "new iphone",
+        "price": 3000,
+        "quantity": 1
+    }
+}
+	
+
+DELETE PRODUCT:
+	:id == put the id of the product (when product created you get back the id)
+	Example - :id =5b4b1a5c5b18a20014649d90
+	DELETE url/products/:id
+	send x-auth in header  
+
+EDIT PRODUCT:
+	:id == put the id of the product (when product created you get back the id)
+	Example - :id =5b4b1a5c5b18a20014649d90
+	PATCH url/products/:id
+	body = {
+	"quantity" : 3,
+	"price" : "3456"
+	
+}
+	send x-auth in header  
+
+
+GET ALL USER PRODUCT:
+	GET url/products
+	send x-auth in header  
+
+GET PRODUCT:
+	:id == put the id of the product (when product created you get back the id)
+	Example - :id =5b4b1a5c5b18a20014649d90
+	GET url/products/:id
+	send x-auth in header  
+
+
+
